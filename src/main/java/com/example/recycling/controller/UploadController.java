@@ -34,22 +34,28 @@ public class UploadController {
     public ResponseEntity<String> uploadPage() {
 
         String html = """
-            <html>
-            <body>
-                <h2>모바일 사진 업로드</h2>
+        <!DOCTYPE html>
+        <html lang="ko">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>모바일 업로드</title>
+        </head>
+        <body>
 
-                <!-- 사진 선택 + 업로드용 form -->
-                <form method="post" enctype="multipart/form-data">
-                    <input type="file" name="file" accept="image/*" />
-                    <button type="submit">업로드</button>
-                </form>
+            <h2>모바일 사진 업로드</h2>
 
-            </body>
-            </html>
-        """;
+            <form method="post" action="/recycle/upload-mobile" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" />
+                <button type="submit">업로드</button>
+            </form>
+
+        </body>
+        </html>
+    """;
 
         return ResponseEntity.ok()
-                .contentType(MediaType.TEXT_HTML)
+                .header("Content-Type", "text/html; charset=UTF-8")
                 .body(html);
     }
 
