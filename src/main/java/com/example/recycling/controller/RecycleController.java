@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.*;
 
 @RestController
@@ -35,18 +36,13 @@ public class RecycleController {
         String text = request.get("text");
 
         System.out.println("🔥 입력 텍스트 = " + text);
-        System.out.println("🔥 입력 이미지 prefix = " +
-                (base64Image != null ? base64Image.substring(0, 30) : "null"));
+        System.out.println("🔥 입력 이미지 prefix = " + (base64Image != null ? base64Image.substring(0, 30) : "null"));
 
         List<Object> contentList = new ArrayList<>();
 
         Map<String, Object> textPart = new HashMap<>();
         textPart.put("type", "text");
-        textPart.put("text",
-                "너는 한국 기준 분리배출/재활용 전문가다.\n" +
-                        "아래 내용을 분석해 한국 기준으로만 답해라.\n\n" +
-                        "문의한 내용: '" + (text != null ? text : "") + "'"
-        );
+        textPart.put("text", "너는 한국 기준 분리배출/재활용 전문가다.\n" + "아래 내용을 분석해 한국 기준으로만 답해라.\n\n" + "문의한 내용: '" + (text != null ? text : "") + "'");
         contentList.add(textPart);
 
         if (base64Image != null && !base64Image.isEmpty()) {
@@ -98,9 +94,53 @@ public class RecycleController {
             System.out.println("🔥 GPT Error Status = " + e.getStatusCode());
             System.out.println("🔥 GPT Error Body = " + e.getResponseBodyAsString());
 
-            return ResponseEntity
-                    .status(e.getStatusCode().value())
-                    .body(e.getResponseBodyAsString());
+            return ResponseEntity.status(e.getStatusCode().value()).body(e.getResponseBodyAsString());
         }
     }
+
+    // ============================================================
+    // 🔥 ❷ 모바일 업로드 API (핸드폰 → 사진 업로드)
+    // ============================================================
+    @PostMapping("/mobile-upload")
+    public ResponseEntity<?> uploadMobile(@RequestBody Map<String, String> body) {
+
+        String base64 = body.get("image");
+        if (base64 == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "이미지 없음"));
+        }
+
+        String id = UUID.randomUUID().toString();  // 업로드 고유 ID 생성
+
+        sessionStore.saveImage(id, base64);        // 이미지 저장
+        sessionStore.setLastUploadedId(id);        // 최근 업로드 ID 저장
+
+        return ResponseEntity.ok(Map.of("id", id));
+    }
+
+
+    // ============================================================
+    // 🔥 ❸ wait 페이지에서 호출하는 API (가장 최근 업로드된 id)
+    // ============================================================
+    @GetMapping("/check")
+    public ResponseEntity<?> checkLastUpload() {
+        String lastId = sessionStore.getLastUploadedId();
+        return ResponseEntity.ok(Map.of("id", lastId));
+    }
+
+
+    // ============================================================
+    // 🔥 ❹ analyze에서 해당 id의 이미지 내용 조회
+    // ============================================================
+    @GetMapping("/image")
+    public ResponseEntity<?> getImage(@RequestParam String id) {
+        String base64 = sessionStore.getImage(id);
+
+        if (base64 == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "이미지 없음"));
+        }
+
+        return ResponseEntity.ok(Map.of("image", base64));
+    }
 }
+
+
