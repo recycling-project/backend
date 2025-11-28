@@ -141,6 +141,15 @@ public class RecycleController {
 
         return ResponseEntity.ok(Map.of("image", base64));
     }
+
+    // ============================================================
+    // 🔥 QR 페이지 시작할 때 이전 업로드 기록 초기화
+    // ============================================================
+    @PostMapping("/reset")
+    public ResponseEntity<?> resetUpload() {
+        sessionStore.setLastUploadedId(null);
+        return ResponseEntity.ok(Map.of("status", "reset_ok"));
+    }
 }
 
 
