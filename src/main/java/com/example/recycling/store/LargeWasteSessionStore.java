@@ -1,5 +1,7 @@
 //세션 저장소
 
+package com.example.recycling.store;
+
 import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
