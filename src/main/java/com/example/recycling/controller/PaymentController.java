@@ -20,9 +20,7 @@ public class PaymentController {
     @PostMapping("/start")
     public Map<String, Object> startPayment(@RequestBody Map<String, Object> req) {
 
-        // price 안전하게 파싱
-        Object priceObj = req.get("price");
-        int price = Integer.parseInt(priceObj.toString());
+        int price = Integer.parseInt(req.get("price").toString());
 
         String orderId = UUID.randomUUID().toString();
         String orderName = "대형폐기물 배출 수수료";
@@ -38,12 +36,15 @@ public class PaymentController {
         body.put("amount", price);
         body.put("orderId", orderId);
         body.put("orderName", orderName);
+
+        // 🔥 필수 추가
+        body.put("method", "CARD");
+
         body.put("successUrl", FRONT_URL + "/payment/success");
         body.put("failUrl", FRONT_URL + "/payment/fail");
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-        // Toss 요청
         ResponseEntity<Map> response = rest.postForEntity(url, entity, Map.class);
 
         Map<String, Object> result = new HashMap<>();
