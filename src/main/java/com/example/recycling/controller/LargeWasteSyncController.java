@@ -24,7 +24,7 @@ public class LargeWasteSyncController {
     // ============================================================
     @PostMapping("/reset")
     public ResponseEntity<?> resetUpload() {
-        sessionStore.reset();
+        sessionStore.resetAll();
         return ResponseEntity.ok(Map.of("status", "reset"));
     }
 

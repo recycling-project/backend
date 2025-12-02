@@ -147,9 +147,18 @@ public class RecycleController {
     // ============================================================
     @PostMapping("/reset")
     public ResponseEntity<?> resetUpload() {
-        sessionStore.setLastUploadedId(null);
+        sessionStore.resetAll();
         return ResponseEntity.ok(Map.of("status", "reset_ok"));
     }
-}
 
 
+    //============사용완료 후 삭제코드 ======
+    @PostMapping("/cleanup")
+    public ResponseEntity<?> cleanup(@RequestBody Map<String, String> body) {
+        String id = body.get("id");
+
+        sessionStore.remove(id);
+        sessionStore.deleteImage(id);
+
+        return ResponseEntity.ok(Map.of("status", "deleted"));
+    }

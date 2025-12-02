@@ -1,8 +1,9 @@
-//세션 저장소
+//대형세션 저장소
 
 package com.example.recycling.store;
 
 import org.springframework.stereotype.Component;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -67,4 +68,15 @@ public class LargeWasteSessionStore {
     public void reset() {
         lastUploadedId = null;
     }
+}
+
+//===========사용완료된 사진 삭제======
+
+public void deleteImage(String id) {
+    imageMap.remove(id);
+}
+
+public void resetAll() {
+    imageMap.clear();
+    lastUploadedId = null;
 }
