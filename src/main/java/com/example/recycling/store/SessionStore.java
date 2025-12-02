@@ -1,9 +1,6 @@
-//일반쓰레기 세션저장소
-
 package com.example.recycling.store;
 
 import org.springframework.stereotype.Component;
-
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -25,7 +22,7 @@ public class SessionStore {
     }
 
 
-    // ======  모바일 업로드 이미지 저장 ======
+    // ====== 모바일 업로드 이미지 저장 ======
     private final ConcurrentHashMap<String, String> imageMap = new ConcurrentHashMap<>();
 
     public void saveImage(String id, String base64) {
@@ -47,15 +44,16 @@ public class SessionStore {
     public String getLastUploadedId() {
         return lastUploadedId;
     }
-}
 
-//====결과 사용끝나면 삭제 코드 =====
-public void deleteImage(String id) {
-    imageMap.remove(id);
-}
 
-public void resetAll() {
-    imageMap.clear();
-    lastUploadedId = null;
-    resultMap.clear();
+    // ====== 사용 완료 후 삭제 기능 ======
+    public void deleteImage(String id) {
+        imageMap.remove(id);
+    }
+
+    public void resetAll() {
+        imageMap.clear();
+        resultMap.clear();
+        lastUploadedId = null;
+    }
 }
