@@ -20,21 +20,20 @@ public class PaymentController {
     @PostMapping("/start")
     public Map<String, Object> startPayment(@RequestBody Map<String, Object> req) {
 
-        // 🔥 price 안정적으로 변환
-        int price = ((Number) req.get("price")).intValue();
+        // price 안전하게 파싱
+        Object priceObj = req.get("price");
+        int price = Integer.parseInt(priceObj.toString());
 
         String orderId = UUID.randomUUID().toString();
-        String orderName = (String) req.getOrDefault("orderName", "대형폐기물 배출 수수료");
+        String orderName = "대형폐기물 배출 수수료";
 
         RestTemplate rest = new RestTemplate();
-        String url = "https://api.tosspayments.com/v1/payments/ready";
+        String url = "https://api.tosspayments.com/v1/payments";
 
-        // 🔥 헤더 구성
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(SECRET_KEY, "");
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // 🔥 Body 구성
         Map<String, Object> body = new HashMap<>();
         body.put("amount", price);
         body.put("orderId", orderId);
@@ -44,10 +43,9 @@ public class PaymentController {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-        // 🔥 토스에 결제 준비 요청
+        // Toss 요청
         ResponseEntity<Map> response = rest.postForEntity(url, entity, Map.class);
 
-        // 🔥 checkoutUrl 추출
         Map<String, Object> result = new HashMap<>();
         result.put("paymentUrl", response.getBody().get("checkoutUrl"));
 
