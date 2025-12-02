@@ -162,3 +162,4 @@ public class RecycleController {
 
         return ResponseEntity.ok(Map.of("status", "deleted"));
     }
+}
