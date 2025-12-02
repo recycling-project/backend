@@ -26,7 +26,7 @@ public class PaymentController {
         String orderName = "대형폐기물 배출 수수료";
 
         RestTemplate rest = new RestTemplate();
-        String url = "https://api.tosspayments.com/v1/payments";
+        String url = "https://api.tosspayments.com/v1/payments/ready";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(SECRET_KEY, "");
