@@ -1,7 +1,9 @@
+package com.example.recycling.logic;
+
 import java.util.List;
 import java.util.Map;
 
-public class trash_type {
+public class TrashType {
     public enum DeskSize { 소형, 대형 }
     public enum DressingTableType { 일반용, 미용실용 }
     public enum BedPart { 매트리스, 틀 }

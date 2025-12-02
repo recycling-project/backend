@@ -1,7 +1,9 @@
 package com.example.recycling.controller;
 
-import com.example.recycling.logic.trash_type;
+import com.example.recycling.logic.TrashType;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/large")
@@ -16,63 +18,64 @@ public class LargeWastePriceController {
         int price = 0;
 
         switch (type) {
+
             case "bab-sang":  // 밥상
-                price = trash_type.getDiningTablePrice();
+                price = TrashType.getDiningTablePrice();
                 break;
 
             case "seo-rap-jang": // 서랍장
-                int drawers = (int) req.getOrDefault("drawers", 4); // 기본값 4단
-                price = trash_type.getDrawerPrice(drawers);
+                int drawers = (int) req.getOrDefault("drawers", 4);
+                price = TrashType.getDrawerPrice(drawers);
                 break;
 
-            case "sofa":
-                int person = (int) req.getOrDefault("person", 2); // 기본 2인용
-                price = trash_type.getSofaPrice(person);
+            case "sofa":  //소파
+                int person = (int) req.getOrDefault("person", 2);
+                price = TrashType.getSofaPrice(person);
                 break;
 
-            case "chair":
-                price = trash_type.getChairPrice();
+            case "chair":  //의자
+                price = TrashType.getChairPrice();
                 break;
 
             case "jang-long": // 장롱
-                int width = (int) req.getOrDefault("width", 80); // 기본 80cm
-                price = trash_type.getClosetPrice(width);
+                int width = (int) req.getOrDefault("width", 80);
+                price = TrashType.getClosetPrice(width);
                 break;
 
-            case "desk":
+            case "desk":  //책상
                 String deskSize = (String) req.getOrDefault("size", "소형");
-                price = trash_type.getDeskPrice(
-                        deskSize.equals("대형") ? trash_type.DeskSize.대형 : trash_type.DeskSize.소형
+                price = TrashType.getDeskPrice(
+                        deskSize.equals("대형") ? TrashType.DeskSize.대형 : TrashType.DeskSize.소형
                 );
                 break;
 
-            case "hwa-jang-dae": // 화장대
+            case "hwa-jang-dae":  //화장대
                 String dtType = (String) req.getOrDefault("type2", "일반용");
-                price = trash_type.getDressingTablePrice(
-                        dtType.equals("미용실용") ? trash_type.DressingTableType.미용실용 :
-                                trash_type.DressingTableType.일반용
+                price = TrashType.getDressingTablePrice(
+                        dtType.equals("미용실용") ? TrashType.DressingTableType.미용실용
+                                : TrashType.DressingTableType.일반용
                 );
                 break;
 
-            case "bed":
+            case "bed":  //침대
                 String part = (String) req.getOrDefault("part", "매트리스");
                 String size = (String) req.getOrDefault("size", "일인용");
-                price = trash_type.getBedPrice(
-                        trash_type.BedPart.valueOf(part),
-                        trash_type.BedSize.valueOf(size)
+                price = TrashType.getBedPrice(
+                        TrashType.BedPart.valueOf(part),
+                        TrashType.BedSize.valueOf(size)
                 );
                 break;
 
-            case "bicycle":
-                price = trash_type.getBicyclePrice();
+            case "bicycle":  //두발자전거
+                price = TrashType.getBicyclePrice();
                 break;
 
-            case "hang-a-ri":
+            case "hang-a-ri":  //항아리
                 int height = (int) req.getOrDefault("height", 50);
-                price = trash_type.getJarPrice(height);
+                price = TrashType.getJarPrice(height);
                 break;
 
-            default:
+            default:  //화분
                 res.put("error", "가격 정보 없음: " + type);
                 return res;
         }
