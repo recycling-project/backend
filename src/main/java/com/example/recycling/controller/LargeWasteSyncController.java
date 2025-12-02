@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -63,7 +64,11 @@ public class LargeWasteSyncController {
     @GetMapping("/check")
     public ResponseEntity<?> checkUpload() {
         String id = sessionStore.getLastUploadedId();
-        return ResponseEntity.ok(Map.of("id", id));
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", id);   // null 허용됨
+
+        return ResponseEntity.ok(result);
     }
 
 
