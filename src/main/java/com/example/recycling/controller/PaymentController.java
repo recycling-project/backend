@@ -27,14 +27,17 @@ public class PaymentController {
 
         RestTemplate rest = new RestTemplate();
         String url = "https://api.tosspayments.com/v1/payments";
+
+        // 🔥 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(SECRET_KEY, "");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // 🔥 요청 바디
         Map<String, Object> body = new HashMap<>();
         body.put("amount", price);
         body.put("orderId", orderId);
         body.put("orderName", orderName);
-        body.put("successUrl", FRONT_URL + "/payment/success");
-        body.put("failUrl", FRONT_URL + "/payment/fail");
-
-        // 🔥 필수 추가
         body.put("method", "CARD");
 
         body.put("successUrl", FRONT_URL + "/payment/success");
@@ -42,10 +45,15 @@ public class PaymentController {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
+        // 🔥 토스 API 호출
         ResponseEntity<Map> response = rest.postForEntity(url, entity, Map.class);
 
+        // checkoutUrl 또는 redirectUrl 대응
+        Object checkoutUrl = response.getBody().get("checkoutUrl");
+        Object redirectUrl = response.getBody().get("redirectUrl");
+
         Map<String, Object> result = new HashMap<>();
-        result.put("paymentUrl", response.getBody().get("checkoutUrl"));
+        result.put("paymentUrl", checkoutUrl != null ? checkoutUrl : redirectUrl);
 
         return result;
     }
