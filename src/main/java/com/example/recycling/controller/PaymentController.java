@@ -26,16 +26,13 @@ public class PaymentController {
         String orderName = "대형폐기물 배출 수수료";
 
         RestTemplate rest = new RestTemplate();
-        String url = "https://api.tosspayments.com/v1/payments/ready";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(SECRET_KEY, "");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
+        String url = "https://api.tosspayments.com/v1/payments";
         Map<String, Object> body = new HashMap<>();
         body.put("amount", price);
         body.put("orderId", orderId);
         body.put("orderName", orderName);
+        body.put("successUrl", FRONT_URL + "/payment/success");
+        body.put("failUrl", FRONT_URL + "/payment/fail");
 
         // 🔥 필수 추가
         body.put("method", "CARD");
