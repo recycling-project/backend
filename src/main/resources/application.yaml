@@ -8,3 +8,5 @@ server:
 
 openai:
   api-key: ${GPT_API_KEY}
+
+TOSS_SECRET_KEY: ${TOSS_SECRET_KEY}
